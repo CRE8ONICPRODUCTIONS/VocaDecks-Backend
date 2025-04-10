@@ -5,8 +5,6 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
 
-
-
 // Load environment variables from .env file
 dotenv.config();
 
@@ -32,9 +30,8 @@ mongoose.connect(process.env.MONGO_URI, {
 const authRoutes = require('./routes/authRoutes');
 app.use('/api/auth', authRoutes);
 
-
-// Use routes
-app.use('/api/auth', authRoutes);
+// Use routes (Note: You only need to use a route once)
+// app.use('/api/auth', authRoutes);
 
 // Default route
 app.get('/', (req, res) => {
@@ -50,15 +47,14 @@ const http = require('http');
 
 // Ping yourself every 5 minutes (300000 ms)
 setInterval(() => {
+    // Use your deployed URL or fallback to localhost with the current port
     const url = process.env.SELF_URL || `http://localhost:${PORT}`;
     console.log(`🔁 Pinging ${url}`);
-    
-    const client = url.startsWith('https') ? https : http;
 
+    const client = url.startsWith('https') ? https : http;
     client.get(url, (res) => {
         console.log(`Ping response: ${res.statusCode}`);
     }).on('error', (err) => {
         console.error('Ping error:', err.message);
     });
 }, 300000); // 5 minutes
-
