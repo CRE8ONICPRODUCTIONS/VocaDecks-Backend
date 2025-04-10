@@ -3,6 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const authRoutes = require('./routes/authRoutes'); // ✅ Relative path
 
 // Load environment variables from .env
 dotenv.config();

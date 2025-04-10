@@ -34,4 +34,8 @@ exports.updateProfile = (req, res) => {
 exports.deleteAccount = (req, res) => {
     // This would delete user account in the DB
     res.status(200).json({ message: "Account deleted successfully." });
+
+    module.exports = router;
+
 };
+
