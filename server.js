@@ -1,14 +1,14 @@
 // server.js
+
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
-const authRoutes = require('./routes/authRoutes'); // ✅ Relative path
 
-// Load environment variables from .env
+// Load environment variables from .env file
 dotenv.config();
 
-// Create express app
+// Create Express app
 const app = express();
 
 // Middleware
@@ -27,17 +27,18 @@ mongoose.connect(process.env.MONGO_URI, {
         process.exit(1);
     });
 
-// Default test route
-app.get('/', (req, res) => {
-    res.send('You have entered a non VocaDecks area. Please return back to the game. Thanks!');
-});
-
-// Import and use auth routes
+// Import routes
 const authRoutes = require('./routes/authRoutes');
+
+// Use routes
 app.use('/api/auth', authRoutes);
 
-// Start the server
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-    console.log(`🚀 Server running on port ${PORT}`);
+// Default route
+app.get('/', (req, res) => {
+    res.send('You have entered a non-VocaDecks area. Please return to the game.');
 });
+
+// Start server
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+
