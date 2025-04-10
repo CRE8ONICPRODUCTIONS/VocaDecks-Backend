@@ -43,20 +43,20 @@ app.get('/', (req, res) => {
 
 // Start server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(🚀 Server running on port ${PORT}));
+app.listen(PORT, () => console.log('🚀 Server running on port ${PORT}'));
 
 const https = require('https');
 const http = require('http');
 
 // Ping yourself every 5 minutes (300000 ms)
 setInterval(() => {
-    const url = process.env.SELF_URL || http://localhost:${PORT};
-    console.log(🔁 Pinging ${url});
+    const url = process.env.SELF_URL || 'http://localhost:${PORT}';
+    console.log('🔁 Pinging ${url}');
     
     const client = url.startsWith('https') ? https : http;
 
     client.get(url, (res) => {
-        console.log(Ping response: ${res.statusCode});
+        console.log('Ping response: ${res.statusCode}');
     }).on('error', (err) => {
         console.error('Ping error:', err.message);
     });
