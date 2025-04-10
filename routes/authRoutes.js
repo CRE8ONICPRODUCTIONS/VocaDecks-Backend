@@ -1,14 +1,37 @@
-const express = require('express');
-const router = express.Router();
-const authController = require('../controllers/authController');
-const { verifyToken } = require('../middleware/auth');
+// controllers/authController.js
 
-// Public routes
-router.post('/signup', authController.signup);
-router.post('/login', authController.login);
+exports.signup = (req, res) => {
+    const { username, email, password } = req.body;
 
-// Protected routes
-router.put('/profile', verifyToken, authController.updateProfile);
-router.delete('/profile', verifyToken, authController.deleteAccount);
+    if (!username || !email || !password) {
+        return res.status(400).json({ message: "All fields are required." });
+    }
 
-module.exports = router;
+    // Stubbed response (replace with real DB logic)
+    res.status(200).json({ message: "User registered successfully!" });
+};
+
+exports.login = (req, res) => {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+        return res.status(400).json({ message: "Email and password are required." });
+    }
+
+    // Stubbed check (replace with real DB query + password hash check)
+    if (email === "test@example.com" && password === "123456") {
+        return res.status(200).json({ message: "Login successful!" });
+    } else {
+        return res.status(401).json({ message: "Invalid credentials." });
+    }
+};
+
+exports.updateProfile = (req, res) => {
+    // This would update user data in the DB
+    res.status(200).json({ message: "Profile updated successfully." });
+};
+
+exports.deleteAccount = (req, res) => {
+    // This would delete user account in the DB
+    res.status(200).json({ message: "Account deleted successfully." });
+};
