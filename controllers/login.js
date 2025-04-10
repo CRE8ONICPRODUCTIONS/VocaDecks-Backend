@@ -1,4 +1,4 @@
-const User = require('../models/user');  // Ensure this points to your User model
+const User = require('../models/User');  // Ensure this points to your User model
 const bcrypt = require('bcryptjs');  // Ensure bcrypt is being used for password comparison
 const jwt = require('jsonwebtoken');  // Use JWT for authentication tokens
 
