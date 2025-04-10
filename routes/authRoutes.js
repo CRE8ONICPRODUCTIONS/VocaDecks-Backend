@@ -13,3 +13,10 @@ router.put('/updateProfile', authController.updateProfile);
 router.delete('/deleteAccount', authController.deleteAccount);
 
 module.exports = router;
+
+const express = require('express');
+const login = require('../controllers/login');
+
+router.post('/login', login);
+
+module.exports = router;
