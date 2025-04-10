@@ -50,7 +50,7 @@ const http = require('http');
 
 // Ping yourself every 5 minutes (300000 ms)
 setInterval(() => {
-    const url = process.env.SELF_URL || 'http://localhost:${PORT}';
+    const url = process.env.SELF_URL || 'https://vocadecks-backend.onrender.com:${PORT}';
     console.log('🔁 Pinging ${url}');
     
     const client = url.startsWith('https') ? https : http;
