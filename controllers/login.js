@@ -48,3 +48,4 @@ exports.login = async (req, res) => {
         res.status(500).json({ message: 'Internal Server Error' });
     }
 };
+console.log("Login request body: ", req.body);
