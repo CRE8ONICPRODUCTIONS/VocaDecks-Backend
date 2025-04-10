@@ -4,6 +4,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const authRoutes = require('./routes/authRoutes'); // Ensure the path is correct
+
 
 // Load environment variables from .env file
 dotenv.config();
@@ -27,8 +29,9 @@ mongoose.connect(process.env.MONGO_URI, {
         process.exit(1);
     });
 
-// Import routes
 const authRoutes = require('./routes/authRoutes');
+app.use('/api/auth', authRoutes);
+
 
 // Use routes
 app.use('/api/auth', authRoutes);
