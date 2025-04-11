@@ -10,6 +10,8 @@ const path = require('path');
 require('dotenv').config();
 const User = require('./models/User'); // Use di correct file path
 
+
+
 // Load environment variables from .env file
 dotenv.config();
 
