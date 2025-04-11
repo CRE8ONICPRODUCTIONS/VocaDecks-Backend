@@ -8,7 +8,7 @@ const https = require('https');
 const http = require('http');
 const path = require('path');
 require('dotenv').config();
-const User = require('./models/User'); // adjust path if needed
+const User = require('./models/User'); // Use di correct file path
 
 // Load environment variables from .env file
 dotenv.config();
@@ -28,11 +28,11 @@ mongoose.connect(MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 })
-    .then(() => console.log('✅ Connected to MongoDB'))
-    .catch((err) => {
-        console.error('❌ MongoDB connection error:', err);
-        process.exit(1);
-    });
+  .then(() => console.log('✅ Connected to MongoDB'))
+  .catch((err) => {
+      console.error('❌ MongoDB connection error:', err);
+      process.exit(1);
+  });
 
 // Import routes (only once)
 const authRoutes = require('./routes/authRoutes');
@@ -47,7 +47,7 @@ app.get('/', (req, res) => {
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
 
-// Constant ping
+// Constant ping - ping yourself every 5 minutes (300000 ms)
 setInterval(() => {
     const url = process.env.SELF_URL || `https://vocadecks-backend.onrender.com:${PORT}`;
     console.log(`🔁 Pinging ${url}`);
@@ -57,28 +57,37 @@ setInterval(() => {
     }).on('error', (err) => {
         console.error('Ping error:', err.message);
     });
-}, 300000); // 5 mins
+}, 300000); // 5 minutes
 
 // Route: Sign Up
 app.post('/signup', async (req, res) => {
     const { username, email, password } = req.body;
+  
+    if (!username || !email || !password) {
+      return res.status(400).json({ message: 'All fields are required.' });
+    }
+  
+    // Check for existing user
     const existing = await User.findOne({ email });
-    if (existing) return res.json({ message: 'Email already registered.' });
-
+    if (existing) {
+      return res.status(400).json({ message: 'Email already registered.' });
+    }
+  
+    // Create a new user with the actual username
     const user = new User({ username, email, password });
     await user.save();
-
-    return res.json({ message: 'Account created successfully.' });
+  
+    return res.json({ message: 'Account created successfully.', user });
 });
-
+  
 // Route: Delete Account
 app.post('/deleteaccount', async (req, res) => {
     const { username, email, password } = req.body;
-
+  
     const deleted = await User.findOneAndDelete({ username, email, password });
     if (deleted) {
-        return res.json({ message: 'Account deleted successfully.' });
+      return res.json({ message: 'Account deleted successfully.' });
     } else {
-        return res.json({ message: 'No matching account found.' });
+      return res.json({ message: 'No matching account found.' });
     }
 });
