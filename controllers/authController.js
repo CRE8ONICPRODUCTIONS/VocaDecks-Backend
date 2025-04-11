@@ -50,4 +50,19 @@ exports.login = async (req, res) => {
     });
 };
 
-// Other auth functions like updateProfile, deleteAccount etc. would go here...
+// Update profile function (stubbed out for now)
+exports.updateProfile = async (req, res) => {
+    // You would probably want to find the user by their ID and update their profile.
+    // For now, let's return a simple response.
+    return res.status(200).json({ msg: 'Profile updated' });
+};
+
+// Delete account function (existing function)
+exports.deleteAccount = async (req, res) => {
+    const { userId } = req.body;
+
+    // Delete the user from the database
+    await User.findByIdAndDelete(userId);
+
+    res.status(200).json({ msg: 'Account deleted' });
+};
