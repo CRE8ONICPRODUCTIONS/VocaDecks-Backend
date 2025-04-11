@@ -6,17 +6,24 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const https = require('https');
 const http = require('http');
+const path = require('path');
+require('dotenv').config();
+const User = require('./models/User'); // adjust path if needed
+
 
 // Load environment variables from .env file
 dotenv.config();
 
 // Create Express app
 const app = express();
+const MONGO_URI = process.env.MONGO_URI;
+
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, {
@@ -39,7 +46,7 @@ app.get('/', (req, res) => {
 });
 
 // Start server
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
 
 // Constant ping - ping yourself every 5 minutes (300000 ms)
@@ -56,3 +63,33 @@ setInterval(() => {
         console.error('Ping error:', err.message);
     });
 }, 300000); // 5 minutes
+
+
+  
+  // Route: Sign Up
+  app.post('/signup', async (req, res) => {
+    const { username, email, password } = req.body;
+  
+    // Check for existing user
+    const existing = await User.findOne({ email });
+    if (existing) {
+      return res.json({ message: 'Email already registered.' });
+    }
+  
+    const user = new User({ username, email, password });
+    await user.save();
+  
+    return res.json({ message: 'Account created successfully.' });
+  });
+  
+  // Route: Delete Account
+  app.post('/deleteaccount', async (req, res) => {
+    const { username, email, password } = req.body;
+  
+    const deleted = await User.findOneAndDelete({ username, email, password });
+    if (deleted) {
+      return res.json({ message: 'Account deleted successfully.' });
+    } else {
+      return res.json({ message: 'No matching account found.' });
+    }
+  });

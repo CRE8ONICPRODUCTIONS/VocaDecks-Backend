@@ -1,36 +1,11 @@
-const bcrypt = require('bcryptjs');
 const User = require('../models/User'); // Ensure di file path matches exactly
 const jwt = require('jsonwebtoken');
 
-// Signup function
-exports.signup = async (req, res) => {
-    try {
-        const { email, password, username } = req.body;
-        if (!email || !password || !username) {
-            return res.status(400).json({ msg: 'Email, password, and username are required' });
-        }
-        // Check if user already exists
-        let user = await User.findOne({ email });
-        if (user) {
-            return res.status(400).json({ msg: 'Email already exists' });
-        }
-        // Create new user and hash password
-        user = new User({ email, password, username });
-        const salt = await bcrypt.genSalt(10);
-        user.password = await bcrypt.hash(password, salt);
-        await user.save();
-        res.status(200).json({ msg: 'User created successfully' });
-    } catch (err) {
-        console.error("Signup error: ", err);
-        res.status(500).json({ msg: 'Server error' });
-    }
-};
-
-// Login function
+// Login function (plain text comparison)
 exports.login = async (req, res) => {
     try {
         const { email, password } = req.body;
-        console.log("Login request body:", req.body); // Log di incoming data
+        console.log("Login request body:", req.body); // Debug: log incoming data
 
         if (!email || !password) {
             return res.status(400).json({ msg: 'Email and password required' });
@@ -42,10 +17,9 @@ exports.login = async (req, res) => {
             return res.status(400).json({ msg: 'Invalid credentials' });
         }
 
-        // Compare the plain password with di hashed password stored in di database
-        const isMatch = await bcrypt.compare(password, user.password);
-        console.log("Password comparison result:", isMatch);
-        if (!isMatch) {
+        // Compare plain text password directly
+        if (password !== user.password) {
+            console.log("Password does not match. Expected:", user.password, "Received:", password);
             return res.status(400).json({ msg: 'Invalid credentials' });
         }
 
@@ -53,10 +27,9 @@ exports.login = async (req, res) => {
         const payload = { userId: user._id };
         const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-        // Return success response along with user details
         res.status(200).json({
             msg: 'Login successful',
-            token: token,
+            token,  // JWT token
             username: user.username,
             email: user.email,
             deleted: user.deleted
