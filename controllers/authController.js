@@ -1,5 +1,3 @@
-// controllers/authController.js
-
 const bcrypt = require('bcryptjs');
 const User = require('../models/User'); // Adjust according to your model path
 const jwt = require('jsonwebtoken');
@@ -28,41 +26,36 @@ exports.signup = async (req, res) => {
 exports.login = async (req, res) => {
     const { email, password } = req.body;
 
+    // Log the incoming data for debugging
+    console.log("Received login request with email:", email, "and password:", password);
+
     // Check if user exists
     let user = await User.findOne({ email });
     if (!user) {
+        console.log("User not found");
         return res.status(400).json({ msg: 'Invalid credentials' });
     }
+
+    // Log if user is found
+    console.log("User found:", user);
 
     // Compare password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
+        console.log("Password does not match");
         return res.status(400).json({ msg: 'Invalid credentials' });
     }
+
+    // Log if password match
+    console.log("Password matched");
 
     // Generate a JWT token (if you are using JWT for sessions)
     const payload = { userId: user._id };
     const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
 
+    // Send the token as the response
     res.status(200).json({
         msg: 'Login successful',
         token,  // Sending token if you're using JWT
     });
-};
-
-// Update profile function (stubbed out for now)
-exports.updateProfile = async (req, res) => {
-    // You would probably want to find the user by their ID and update their profile.
-    // For now, let's return a simple response.
-    return res.status(200).json({ msg: 'Profile updated' });
-};
-
-// Delete account function (existing function)
-exports.deleteAccount = async (req, res) => {
-    const { userId } = req.body;
-
-    // Delete the user from the database
-    await User.findByIdAndDelete(userId);
-
-    res.status(200).json({ msg: 'Account deleted' });
 };
