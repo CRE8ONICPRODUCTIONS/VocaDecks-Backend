@@ -13,3 +13,4 @@ router.put('/updateProfile', authController.updateProfile);
 router.delete('/deleteAccount', authController.deleteAccount);
 
 module.exports = router;
+
