@@ -2,15 +2,12 @@ const express = require('express');
 const router = express.Router();
 
 // Controller methods
-const authController = require('../controllers/authController');
+const authController = require('../controllers/authController'); // Correct import
 
 // Routes
-router.post('/signup', authController.signup);
-router.post('/login', authController.login);
-
-// Check if updateProfile and deleteAccount functions are properly defined in authController
-router.put('/updateProfile', authController.updateProfile);
-router.delete('/deleteAccount', authController.deleteAccount);
+router.post('/signup', authController.signup);  // Correct route handler
+router.post('/login', authController.login);    // Correct route handler
+router.put('/updateProfile', authController.updateProfile); // If defined
+router.delete('/deleteAccount', authController.deleteAccount); // If defined
 
 module.exports = router;
-
